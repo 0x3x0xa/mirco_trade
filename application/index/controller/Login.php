@@ -171,7 +171,7 @@ class Login extends Controller
             if(!$codeid){
                 return WPreturn('此邀请码不存在',-1);
             }
-            
+            /*
             //判断手机验证码
             if(!isset($_SESSION['code']) || $_SESSION['code'] != $data['phonecode'] ){
                 return WPreturn('手机验证码不正确',-1);
@@ -180,6 +180,7 @@ class Login extends Controller
             }
             
             unset($data['phonecode']);
+             */
             unset($data['upwd2']);
             if(check_user('utel',$data['username'])){
                 return WPreturn('该手机号已存在',-1);
