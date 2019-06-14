@@ -93,7 +93,7 @@ class User extends Base
 			$data['upwd'] = md5($data['upwd'].$data['utime']);
 			$data['oid'] = $_SESSION['userid'];
 			$data['managername'] = db('userinfo')->where('uid',$data['oid'])->value('username');
-			$data['username'] = $data['utime'];
+			$data['username'] = $data['nickname'];
 
 			$issetutl = db('userinfo')->where('utel',$data['utel'])->find();
 			if($issetutl){
@@ -105,13 +105,8 @@ class User extends Base
 			unset($data['upwd2']);
 			//插入数据
 			$ids = Db::name('userinfo')->insertGetId($data);
-
-			$newdata['uid'] = $ids;
-			$newdata['username'] = 10000000+$ids;
-
-			$newids = Db::name('userinfo')->update($newdata);
-
-			if ($newids) {
+			
+			if ($ids) {
 				return WPreturn('添加用户成功!',1);
 			}else{
 				return WPreturn('添加用户失败,请重试!',-1);
