@@ -750,8 +750,8 @@ class User extends Base
 		}
 
    		//dump($data);qianbaotong
-        if(in_array($post['pay_type'],array('paysapi_alipay','paysapi_wxpay'))){
-            return  $Pay->paysapi($data);
+        if(in_array($post['pay_type'],array('hypay_alipay','hypay_wxpay'))){
+            return  $Pay->hypay($data);
         }
 
    	}

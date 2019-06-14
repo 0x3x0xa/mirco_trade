@@ -39,59 +39,46 @@ class Pay extends Controller
         $this->key2 = '57a599aafd1342f8be3b31417883186f';
     }
 
-    public function paysapi($data){
-        $price = $data["bpprice"];
-        $paysapiTypeArr = ["paysapi_alipay" => 1,"paysapi_wxpay" => 2];
-        $istype = $paysapiTypeArr[ $data["pay_type"] ];
+    public function hypay($data){
+        $orderAmount = $data["bpprice"];
+        $payMethodArr = ["hypay_wxpay" => 1,"hypay_alipay" => 2];
+        $payMethod = $payMethodArr[ $data["pay_type"] ];
 
-        $orderuid = "uid_" .$data['uid'];       //此处传入您网站用户的用户名，方便在paysapi后台查看是谁付的款，强烈建议加上。可忽略。
-
-        //校验传入的表单，确保价格为正常价格（整数，1位小数，2位小数都可以），支付渠道只能是1或者2，orderuid长度不要超过33个中英文字。
-
-        //此处就在您服务器生成新订单，并把创建的订单号传入到下面的orderid中。
-        $goodsname = $data['remarks'];
-        $orderid = $data['balance_sn'];    //每次有任何参数变化，订单号就变一个吧。
-        $uid = "1148e384401b2c4ca1dcc13e";//"此处填写PaysApi的uid";
-        $token = "42e44acebb8ed3c3d37927584bb3edd5";//"此处填写PaysApi的Token";
-        $return_url = "http://".$_SERVER['SERVER_NAME']."/index/user/index.html";
-        $notify_url = "http://".$_SERVER['SERVER_NAME']."/index/pay/paysapiNotify.html";
-
-        $key = md5($goodsname. $istype . $notify_url . $orderid . $orderuid . $price . $return_url . $token . $uid);
-        //经常遇到有研发问为啥key值返回错误，大多数原因：1.参数的排列顺序不对；2.上面的参数少传了，但是这里的key值又带进去计算了，导致服务端key算出来和你的不一样。
-
-        $returndata['goodsname'] = $goodsname;
-        $returndata['istype'] = $istype;
-        $returndata['key'] = $key;
-        $returndata['notify_url'] = $notify_url;
-        $returndata['orderid'] = $orderid;
-        $returndata['orderuid'] =$orderuid;
-        $returndata['price'] = $price;
-        $returndata['return_url'] = $return_url;
-        $returndata['uid'] = $uid;
-        return $this->fetch('user/paysapi',compact('returndata'));
+        $payTypeArr = ["hypay_wxpay" => 11,"hypay_alipay" => 21];
+        $payType = $payTypeArr[ $data["pay_type"] ];
+        $orderId = $data['balance_sn'];    //每次有任何参数变化，订单号就变一个吧。
+        $merchant = "201905240555498663";//"此处填写PaysApi的uid";
+        $signType = "MD5";
+        $version = "1.0";
+        $outcome = "no";
+        $key = "6F60B34B328C0F71433F146631FD149C";//"此处填写PaysApi的Token";
+        $returnData = compact(['orderAmount','orderId','merchant','payMethod','payType','signType','version','outcome']);
+        ksort($returnData);
+        $postString = http_build_query($returnData);
+        $mdString = md5($postString.$key);
+        $signMyself = strtoupper($mdString);
+        $returnData["sign"] = $signMyself;
+        $returnData['createTime'] = time();//time()为当前时间戳 秒级
+        $returnData['notifyUrl'] = "http://".$_SERVER['SERVER_NAME']."/index/pay/hypayNotify.html";
+        $returnData['returnUrl'] = "http://".$_SERVER['SERVER_NAME']."/index/user/index.html";
+        $postString = http_build_query($data);
+        $url="http://api.hypay.xyz/index.php/Api/Index/createOrder?".$postString;
+        header("Location: " .$url);
     }
 
-    function paysapiNotify(){
-        $paysapi_id = $_POST["paysapi_id"];
-        $orderid = $_POST["orderid"];
-        $price = $_POST["price"];
-        $realprice = $_POST["realprice"];
-        $orderuid = $_POST["orderuid"];
-        $key = $_POST["key"];
-
-        //校验传入的参数是否格式正确，略
-
-        $token = "42e44acebb8ed3c3d37927584bb3edd5";
-
-        $temps = md5($orderid . $orderuid . $paysapi_id . $price . $realprice . $token);
-
-        if ($temps != $key){
-            $return['msg'] = "key值不匹配";
-            $return['data'] = '';
-            $return['code'] = -1;
-            return json_encode($return);
-        }else{
-            return $this->notify_ok_dopay($orderid,$price);
+    function hypayNotify(){
+        $json = file_get_contents('php://input');
+        $key =  '6F60B34B328C0F71433F146631FD149C';
+        $arr = json_decode($json,true);
+        $jsonBase64 = base64_encode(json_encode($arr['paramsJson']));
+        $jsonBase64Md5 = md5($jsonBase64);
+        $sign = strtoupper(md5($key.$jsonBase64Md5));
+        if($sign != $arr['sign']){
+            echo 'error';
+        }
+        if($_SERVER['REMOTE_ADDR'] == "122.14.227.221"||$_SERVER['REMOTE_ADDR'] == "122.14.195.188"){
+            $this->notify_ok_dopay($arr['data']['orderId'],$arr['data']['orderAmount']);
+            echo 'success';
         }
     }
     /**
