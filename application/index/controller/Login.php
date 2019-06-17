@@ -117,9 +117,10 @@ class Login extends Controller
                             $userinfo->update($t_data);
                             return WPreturn('登录成功!',1);
 
-                        }elseif($result['ustatus']==1){
-                            return WPreturn('登录失败,您的账户暂时被冻结!',-1);
-                        }else{
+                        }//elseif($result['ustatus']==1){
+                            //return WPreturn('登录失败,您的账户暂时被冻结!',-1);
+                        //}
+                        else{
                             return WPreturn('登录失败,用户名不存在!',-1);
                         }
                     
