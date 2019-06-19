@@ -1,5 +1,5 @@
 <?php
-namespace app\houtai_g2chfjx6\controller;
+namespace app\daili_aydke5pd\controller;
 use think\Controller;
 use think\Request;
 use think\Cookie;
@@ -40,7 +40,7 @@ class Login extends Controller
 					
 					return WPreturn('您无权登录!',-1);
 				}
-                if($result['otype'] != 3){
+                if($result['otype'] == 3){
 
                     return WPreturn('非法登录地址!',-1);
                 }
