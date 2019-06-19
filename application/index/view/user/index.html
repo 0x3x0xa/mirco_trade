@@ -255,7 +255,8 @@ var returnrul = "{:url('user/index')}";
                 <!--注意修改金额 需要同时修改前面的值 money="10" -->
 				<?php $_rand = rand(0,100);?><!--随机生成数-->
               {volist name="reg_push" id="vo"}
-               <li money="{$vo}.{$_rand}"><a href="javascript:;">{$vo}.{$_rand}元<s></s></a></li>
+               <!-- li money="{$vo}.{$_rand}"><a href="javascript:;">{$vo}.{$_rand}元<s></s></a></li -->
+              <li money="{$vo}"><a href="javascript:;">{$vo}元<s></s></a></li>
                     {/volist}
               
             </ul>

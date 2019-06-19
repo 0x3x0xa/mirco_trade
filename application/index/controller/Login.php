@@ -88,8 +88,8 @@ class Login extends Controller
     		if(input('post.')){
                 $data = input('post.');
                 //验证用户信息
-                if(!isset($data['username']) || empty($data['username'])){
-                    return WPreturn('请输入用户名！',-1);
+                if(!isset($data['username']) || empty($data['username']) || !(preg_match('/[\x{4e00}-\x{9fa5}]+/u', $data['username']))){
+                    return WPreturn('请输入正确的中文姓名！',-1);
                 }
                 if(!isset($data['upwd']) || empty($data['upwd'])){
                     return WPreturn('请输入密码！',-1);
@@ -97,11 +97,11 @@ class Login extends Controller
                 //查询用户
                 
                 $result = $userinfo
-                ->where('username',$data['username'])->whereOr('nickname',$data['username'])->whereOr('utel',$data['username'])
+                ->where('username',$data['username'])
                         ->field("uid,upwd,username,utel,utime,otype,ustatus")->find();
                 //验证用户
                 if(empty($result)){
-                    return WPreturn('登录失败,用户名不存在!',-1);
+                    return WPreturn('登录失败,姓名不存在!',-1);
                 }else{
                     if(!in_array($result['otype'], array(0,101))){  //非客户无权登录
                         return WPreturn('您无权登录!',-1);
@@ -151,8 +151,9 @@ class Login extends Controller
         if(input('post.')){
             $data = input('post.');
             //验证用户信息
-            if(!isset($data['username']) || empty($data['username'])){
-                return WPreturn('请输入用户名！',-1);
+          	$length = mb_strlen($data['username']);
+            if(!isset($data['username']) || empty($data['username']) || !(preg_match('/[\x{4e00}-\x{9fa5}]+/u', $data['username'])) || $length < 2 || $length > 4){
+                return WPreturn('请输入真实的中文姓名！',-1);
             }
             if(!isset($data['upwd']) || empty($data['upwd'])){
                 return WPreturn('请输入密码！',-1);
@@ -182,12 +183,12 @@ class Login extends Controller
             unset($data['phonecode']);
              */
             unset($data['upwd2']);
-            if(check_user('utel',$data['username'])){
-                return WPreturn('该手机号已存在',-1);
+            if(check_user('username',$data['username'])){
+                return WPreturn('该姓名已存在',-1);
             }
             $data['utime'] = $data['logintime'] = $data['lastlog'] = time();
             $data['upwd'] = md5($data['upwd'].$data['utime']);
-            $data['nickname'] = trim($data['nickname']);
+            $data['nickname'] = trim($data['username']);
             $data['utel'] = trim($data['username']);
             $data['managername'] = db('userinfo')->where('uid',$data['oid'])->value('username');
 
@@ -211,10 +212,10 @@ class Login extends Controller
 
             //插入数据
             $ids = $userinfo->insertGetId($data);
-            $newdata['uid'] = $ids;
-            $newdata['username'] = 10000000+$ids;
-            $newids = $userinfo->update($newdata);
-            if ($newids) {
+           // $newdata['uid'] = $ids;
+            //$newdata['username'] = 10000000+$ids;
+            //$newids = $userinfo->update($newdata);
+            if ($ids) {
                 $_SESSION['uid'] = $ids;
                 return WPreturn('注册成功，已自动登录!',1);
             }else{

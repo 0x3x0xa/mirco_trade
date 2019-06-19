@@ -12,7 +12,7 @@ class Base extends Controller
 		//session_unset();
 		//验证登录
 		$login = cookie('denglu');
-		if(!isset($login['userid'])){
+		if(!isset($login['userid']) || !isset($_SESSION['userid'])){
 			$this->error('请先登录！','login/login',1,1);
 		}
 		

@@ -33,7 +33,7 @@ class Api extends Controller{
 		foreach ($pro as $k => $v) {
 
 			//验证休市
-			$isopen = $v['isopen'] && ChickIsOpen($v['pid']);
+			$isopen = ChickIsOpen($v['pid']);
 			if(!$isopen){
 				continue;
 			}

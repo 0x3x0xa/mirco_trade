@@ -19,7 +19,7 @@ return [
     // 用户名
     'username'        => 'jiaxin_com',
     // 密码
-    'password'        => 'KWezpEXwjJnSwN5L',
+    'password'        => 'eBrLEifZEPX2rHzB',
     // 端口
     'hostport'        => '3306',
     // 连接dsn

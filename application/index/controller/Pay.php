@@ -47,37 +47,37 @@ class Pay extends Controller
         $payTypeArr = ["hypay_wxpay" => 11,"hypay_alipay" => 21];
         $payType = $payTypeArr[ $data["pay_type"] ];
         $orderId = $data['balance_sn'];    //每次有任何参数变化，订单号就变一个吧。
-        $merchant = "201905240555498663";//"此处填写PaysApi的uid";
+        $merchant = "201906190222301614";//"此处填写PaysApi的uid";
         $signType = "MD5";
         $version = "1.0";
         $outcome = "no";
-        $key = "6F60B34B328C0F71433F146631FD149C";//"此处填写PaysApi的Token";
+        $key = "03A2D5079A5B8A19844B3A865FD74A51";//"此处填写PaysApi的Token";
         $returnData = compact(['orderAmount','orderId','merchant','payMethod','payType','signType','version','outcome']);
         ksort($returnData);
         $postString = http_build_query($returnData);
         $mdString = md5($postString.$key);
         $signMyself = strtoupper($mdString);
         $returnData["sign"] = $signMyself;
+      	$returnData["isLoop"] = 'yes';
         $returnData['createTime'] = time();//time()为当前时间戳 秒级
         $returnData['notifyUrl'] = "http://".$_SERVER['SERVER_NAME']."/index/pay/hypayNotify.html";
         $returnData['returnUrl'] = "http://".$_SERVER['SERVER_NAME']."/index/user/index.html";
-        $postString = http_build_query($data);
+        $postString = http_build_query($returnData);
         $url="http://api.hypay.xyz/index.php/Api/Index/createOrder?".$postString;
         header("Location: " .$url);
     }
 
     function hypayNotify(){
         $json = file_get_contents('php://input');
-        $key =  '6F60B34B328C0F71433F146631FD149C';
+        $key =  '03A2D5079A5B8A19844B3A865FD74A51';
         $arr = json_decode($json,true);
         $jsonBase64 = base64_encode(json_encode($arr['paramsJson']));
         $jsonBase64Md5 = md5($jsonBase64);
         $sign = strtoupper(md5($key.$jsonBase64Md5));
         if($sign != $arr['sign']){
             echo 'error';
-        }
-        if($_SERVER['REMOTE_ADDR'] == "122.14.227.221"||$_SERVER['REMOTE_ADDR'] == "122.14.195.188"){
-            $this->notify_ok_dopay($arr['data']['orderId'],$arr['data']['orderAmount']);
+        }else{
+            $res = $this->notify_ok_dopay($arr['paramsJson']['data']['orderId'],$arr['paramsJson']['data']['orderAmount']);
             echo 'success';
         }
     }
