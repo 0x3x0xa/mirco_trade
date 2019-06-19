@@ -106,10 +106,12 @@ class User extends Base
 			//插入数据
 			$ids = Db::name('userinfo')->insertGetId($data);
 
+
 			//$newdata['uid'] = $ids;
 			//$newdata['username'] = 10000000+$ids;
 
 			//$newids = Db::name('userinfo')->update($newdata);
+
 
 			if ($ids) {
 				return WPreturn('添加用户成功!',1);
