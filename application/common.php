@@ -531,7 +531,7 @@ function set_my_team_html($array,$type=1){
 	                    <div class="div_my_son">
 	                      <ul class="my_sons">
 	                        <li>代理名：'.$vo['username'].' 余额：'.$vo['usermoney'].'</li>
-	                        <li>手机：'.$vo['utel'].' <a href="/admin/user/userlist.html?uid='.$vo['uid'].'"><button class="btn btn-primary btn-xs">详情</button></a></li>
+	                        <li>手机：'.$vo['utel'].' <a href="/houtai_g2chfjx6/user/userlist.html?uid='.$vo['uid'].'"><button class="btn btn-primary btn-xs">详情</button></a></li>
 	                      </ul>
 	                      <a href="javascript:;"><p class="showdiv show_uid_'.$vo['uid'].'" onclick="showoid('.$vo['uid'].',1)" >+</p></a>
 	                      </div>
@@ -659,7 +659,7 @@ function cash_oid($uid)
 		$class = 'style="color:red";';
 	}
 
-	return '<td> <a title="点击查看" href="/admin/user/userlist.html?uid='.$uid.'"> '.$uid.' </a> </td><td '.$class.'>'.$minprice.'</td>';
+	return '<td> <a title="点击查看" href="/houtai_g2chfjx6/user/userlist.html?uid='.$uid.'"> '.$uid.' </a> </td><td '.$class.'>'.$minprice.'</td>';
 	
 
 
