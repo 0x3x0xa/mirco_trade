@@ -46,7 +46,7 @@ class Order extends Base
 		
 		//验证余额是否够
 		if($user['usermoney'] < $data['order_price'] + $web_poundage){
-			return WPreturn('您得余额不足，请充值！',-1);
+			return WPreturn('您的余额不足，请充值！',-1);
 		}
 		//验证金额 20 ~ 5000
 		if($data['order_price'] < $conf['order_min_price'] || $data['order_price'] > $conf['order_max_price']){
