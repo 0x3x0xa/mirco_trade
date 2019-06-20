@@ -64,7 +64,7 @@ class PushEvent
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));
         $res = curl_exec($ch);
         curl_close($ch);
-        dump($res);
+        return $res;
 
     }
 }
