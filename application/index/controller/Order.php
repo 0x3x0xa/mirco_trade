@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 use think\Db;
+use msgpush\PushEvent;
 
 
 class Order extends Base
@@ -35,7 +36,7 @@ class Order extends Base
 		//验证是否开市
 		
 		//用户信息
-		$user = Db::name('userinfo')->field('ustatus,usermoney,uid')->where('uid',$data['uid'])->find();
+		$user = Db::name('userinfo')->field('ustatus,usermoney,uid,username')->where('uid',$data['uid'])->find();
 		//验证用户是否被冻结
 		if($user['ustatus'] != 0){
 			return WPreturn('您的账户已被冻结！',-1);
@@ -84,7 +85,8 @@ class Order extends Base
         	$nowmoney = $adddata['commission'];
         	if($nowmoney < 0) $nowmoney=0;
         	set_price_log($data['uid'],2,$u_fee,'下单','下单成功',$ids,$nowmoney);
-        	
+        	$pusher = new PushEvent();
+        	$pusher->setUser('1')->setContent("恭喜！".$user['username']."已下单".$adddata['fee']."元!")->push();
         	if($editmoney){
         		$adddata['oid'] = $ids;
 
