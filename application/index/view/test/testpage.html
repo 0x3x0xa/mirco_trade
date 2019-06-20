@@ -16,7 +16,7 @@
 <script>
     try{
         $(document).ready(function(){
-            var socket = io('http://127.0.0.1:2120',{"reconnection":false});
+            var socket = io('http://39.98.205.157:2120',{"reconnection":false});
             var uid = 1;
             // 当socket连接后发送登录请求
             socket.on('connect', function(){socket.emit('login', uid);});
