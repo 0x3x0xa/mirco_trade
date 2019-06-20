@@ -85,8 +85,8 @@ class Order extends Base
         	$nowmoney = $adddata['commission'];
         	if($nowmoney < 0) $nowmoney=0;
         	set_price_log($data['uid'],2,$u_fee,'下单','下单成功',$ids,$nowmoney);
-        	//$pusher = new PushEvent();
-        	//$pusher->setUser('1')->setContent("恭喜！".$user['username']."已下单".$adddata['fee']."元!")->push();
+        	$pusher = new PushEvent();
+        	$pusher->setUser('1')->setContent("恭喜！".$user['username']."已下单".$adddata['fee']."元!")->push();
         	if($editmoney){
         		$adddata['oid'] = $ids;
 
