@@ -2,7 +2,7 @@
 namespace app\index\controller;
 use think\Db;
 use think\Controller;
-
+use msgpush\PushEvent;
 
 
 class Test extends Controller
@@ -31,4 +31,13 @@ class Test extends Controller
     	}
       	
 	}
+
+	public function webPusher(){
+        $pusher = new PushEvent();
+        $pusher->setUser('1')->setContent("恭喜！admin已下单100元!")->push();
+    }
+
+    public function testPage(){
+        return $this->fetch();
+    }
 }
