@@ -108,8 +108,8 @@ class Login extends Controller
                     }
                     if($result['upwd'] == md5($data['upwd'].$result['utime'])){
                     
-                        if ($result['ustatus']==0)
-                        {
+                        //if ($result['ustatus']==0)
+                       // {
                             $_SESSION['uid'] = $result['uid'];
                             //更新登录时间
                             $t_data['logintime'] = $t_data['lastlog'] = time();
@@ -117,15 +117,14 @@ class Login extends Controller
                             $userinfo->update($t_data);
                             return WPreturn('登录成功!',1);
 
-                        }//elseif($result['ustatus']==1){
+                       // }elseif($result['ustatus']==1){
                             //return WPreturn('登录失败,您的账户暂时被冻结!',-1);
-                        //}
-                        else{
-                            return WPreturn('登录失败,用户名不存在!',-1);
-                        }
+                        // }
+                       // else{
+                         //   return WPreturn('登录失败,用户名不存在!',-1);
+                       // }
                     
-                    }
-                    else{
+                    }else{
                         return WPreturn('登录失败,密码错误!',-1);
                     }
                 }
