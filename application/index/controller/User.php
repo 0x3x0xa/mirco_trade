@@ -753,6 +753,10 @@ class User extends Base
         if(in_array($post['pay_type'],array('hypay_alipay','hypay_wxpay'))){
             return  $Pay->hypay($data);
         }
+        //星火支付；
+        if($post['pay_type']== "sfpay"){
+            return  $Pay->sfPay($data);
+        }
 
    	}
 

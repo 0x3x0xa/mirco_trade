@@ -81,6 +81,40 @@ class Pay extends Controller
             echo 'success';
         }
     }
+
+    /**星火支付
+     *
+     */
+    public function sfPay($data){
+        $customerAmount = "";
+        $customerAmountCny = $data["bpprice"];
+        $outOrderId = $data['balance_sn'];
+        $receiveUrl = "http://".$_SERVER['SERVER_NAME']."/index/pay/sfpayNotify.html";
+        $pickupUrl = "http://".$_SERVER['SERVER_NAME']."/index/user/index.html";
+        $signType = "MD5";
+        $md5Key = "dbcec27adbd823513111d41013c58fb0";//"此处填写PaysApi的Token";
+        $returnData = compact(['outOrderId','customerAmount','pickupUrl','receiveUrl','customerAmountCny','signType']);
+        $returnData['sign'] = md5(implode($returnData).$md5Key);
+        $returnData['APPKey'] = '23c3c8cfda784b7d905c81fddd37243a';
+        $postString = http_build_query($returnData);
+        $url="https://s.starfireotc.com/payLink/mobile.html?".$postString;
+        header("Location: " .$url);
+    }
+
+    function sfpayNotify(){
+        $notification = $_REQUEST;
+        parse_str($notification,$resultArr );
+        file_put_contents('sf_pay_notify.log',json_encode($resultArr)."\n",FILE_APPEND);
+        $key =  'dbcec27adbd823513111d41013c58fb0';
+        $sign = md5($resultArr['customerAmount'] . $resultArr['customerAmountCny'] . $resultArr['outOrderId'] . $resultArr['orderId'] . $resultArr['signType'] . $resultArr['status'] . $key);
+        file_put_contents('sf_pay_notify.log',json_encode($sign)."\n",FILE_APPEND);
+        if($sign != $resultArr['sign']){
+            echo 'error';
+        }else{
+            $this->notify_ok_dopay($resultArr['outOrderId'],$resultArr['customerAmountCny']);
+            echo 'success';
+        }
+    }
     /**
      * 微信支付
      * @return [type] [description]
